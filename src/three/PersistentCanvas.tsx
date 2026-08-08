@@ -14,6 +14,7 @@ import { useDpr, useMotionOff } from "@/lib/hooks";
 import { useScene } from "@/store/scene";
 import { useUi } from "@/store/ui";
 import { CanvasBoundary } from "./CanvasBoundary";
+import { CaptureBridge } from "./CaptureBridge";
 import { SceneRoot } from "./scenes";
 
 export function PersistentCanvas() {
@@ -51,8 +52,6 @@ export function PersistentCanvas() {
           gl={{
             antialias: true,
             alpha: true,
-            // required by "\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c PNG": we read the buffer back after the frame
-            preserveDrawingBuffer: true,
             powerPreference: "high-performance",
             stencil: false,
           }}
@@ -64,6 +63,7 @@ export function PersistentCanvas() {
             gl.setClearColor(0x000000, 0);
           }}
         >
+          <CaptureBridge />
           <Suspense fallback={null}>
             <SceneRoot />
           </Suspense>
