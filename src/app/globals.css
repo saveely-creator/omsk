@@ -1,0 +1,555 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   OMSK IMPIRE / design tokens (Step 2 art direction, locked)
+   ========================================================================= */
+
+:root {
+  /* palette */
+  --bg-deep: #0b1410;
+  --bg: #12211a;
+  --surface: #16321f;
+  --green-mid: #2f6b4a;
+  --accent: #4ade80;
+  --accent-2: #49c5b6;
+  --clay: #eaf3ec;
+  --muted: #8fa79a;
+
+  /* derived */
+  --line: rgba(234, 243, 236, 0.08);
+  --line-strong: rgba(234, 243, 236, 0.16);
+  --glass: rgba(22, 50, 31, 0.72);
+  --hero-grad: radial-gradient(60% 55% at 50% 42%, #1e3a2a 0%, #0b1410 78%);
+  --fog: linear-gradient(to top, #0b1410 0%, rgba(11, 20, 16, 0) 42%);
+  --grain-op: 0.045;
+
+  /* type scale */
+  --t-hero: clamp(4rem, 18vw, 22rem);
+  --t-h1: clamp(2.5rem, 7vw, 6rem);
+  --t-h2: clamp(1.75rem, 3.4vw, 3rem);
+  --t-quote: clamp(1.75rem, 5.2vw, 4.5rem);
+  --t-body: clamp(0.95rem, 1.05vw, 1.0625rem);
+  --t-label: 0.6875rem;
+  --t-micro: 0.625rem;
+
+  /* grid */
+  --margin: 20px;
+  --gutter: 16px;
+  --rail: 0px;
+  --cols: 4;
+
+  /* motion */
+  --curtain: 820ms;
+  --ease-lab: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --margin: 32px;
+    --gutter: 20px;
+    --rail: 56px;
+    --cols: 8;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --margin: 48px;
+    --gutter: 24px;
+    --rail: 88px;
+    --cols: 12;
+  }
+}
+
+/* ---- acid mode (konami) ---- */
+:root[data-acid="on"] {
+  --bg-deep: #04120a;
+  --bg: #08240f;
+  --surface: #0d3a17;
+  --green-mid: #3fbf5f;
+  --accent: #b6ff2e;
+  --accent-2: #6bffd0;
+  --clay: #f2ffe8;
+  --muted: #9fd6a4;
+  --hero-grad: radial-gradient(60% 55% at 50% 42%, #0f5c26 0%, #04120a 78%);
+  --grain-op: 0.09;
+}
+
+/* ---- vhs mode ---- */
+:root[data-vhs="on"] body {
+  filter: saturate(1.35) contrast(1.08);
+}
+
+:root[data-vhs="on"] .vhs-layer {
+  opacity: 1;
+}
+
+/* ---- animations off ---- */
+:root[data-motion="off"] *,
+:root[data-motion="off"] *::before,
+:root[data-motion="off"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* =========================================================================
+   base
+   ========================================================================= */
+
+* {
+  min-width: 0;
+}
+
+html {
+  background: var(--bg-deep);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg-deep);
+  color: var(--clay);
+  font-family: var(--font-ui);
+  font-size: var(--t-body);
+  line-height: 1.62;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Lenis owns scrolling; keep native scrollbar out of the composition. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--green-mid);
+  color: var(--clay);
+}
+
+button,
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Digits are always tabular: lab instruments do not jitter. */
+.num,
+time,
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* =========================================================================
+   layout primitives
+   ========================================================================= */
+
+.shell {
+  /* the rotated lab rail lives at left: --margin, so content has to clear it */
+  padding-left: calc(var(--margin) + var(--rail));
+  padding-right: var(--margin);
+}
+
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gutter);
+}
+
+.screen {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* =========================================================================
+   type helpers
+   ========================================================================= */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+.label {
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.micro {
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* hero nickname: sits behind the sculpture, low opacity, cropped by viewport */
+.hero-name {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  color: var(--clay);
+  opacity: 0.22;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* the front half of the sandwich: same glyphs, clipped to overlap the figure */
+.hero-name--front {
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0 62%,
+    #000 62% 100%
+  );
+  mask-image: linear-gradient(to bottom, transparent 0 62%, #000 62% 100%);
+}
+
+/* =========================================================================
+   lines, grain, fog
+   ========================================================================= */
+
+.hairline {
+  height: 1px;
+  background: var(--line);
+}
+
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: var(--grain-op);
+  background-image: var(--grain-url);
+  background-size: 180px 180px;
+  will-change: transform;
+  animation: grain-shift 900ms steps(3) infinite;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    transform: translate3d(-2%, 1%, 0);
+  }
+  66% {
+    transform: translate3d(1%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fog {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 38vh;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--fog);
+}
+
+.vhs-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-lab);
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.22) 0 1px,
+      rgba(0, 0, 0, 0) 1px 3px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 0, 80, 0.05) 0 2px,
+      rgba(0, 255, 200, 0.05) 2px 4px
+    );
+}
+
+/* =========================================================================
+   cursor
+   ========================================================================= */
+
+@media (hover: hover) and (pointer: fine) {
+  .cursor-none,
+  .cursor-none * {
+    cursor: none;
+  }
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+/* =========================================================================
+   controls: transparent, hairline, never a filled accent slab
+   ========================================================================= */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.85em 1.3em;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: transparent;
+  font-size: var(--t-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--clay);
+  transition:
+    border-color 320ms var(--ease-lab),
+    color 320ms var(--ease-lab),
+    background-color 320ms var(--ease-lab);
+}
+
+.btn:hover,
+.btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: rgba(74, 222, 128, 0.05);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 0.8em;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  font-size: var(--t-micro);
+  font-family: var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  transition:
+    border-color 260ms var(--ease-lab),
+    color 260ms var(--ease-lab);
+}
+
+.chip:hover {
+  border-color: var(--line-strong);
+  color: var(--clay);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* hover underline that draws in from the left */
+.ul {
+  position: relative;
+  display: inline-block;
+}
+
+.ul::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.15em;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms var(--ease-lab);
+}
+
+.ul:hover::after,
+.ul:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* =========================================================================
+   reveal + carousel
+   ========================================================================= */
+
+.reveal-line {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-word {
+  display: inline-block;
+  will-change: transform;
+}
+
+.drag-track {
+  display: flex;
+  gap: var(--gutter);
+  cursor: grab;
+  touch-action: pan-y;
+  will-change: transform;
+}
+
+.drag-track.is-dragging {
+  cursor: grabbing;
+}
+
+/* test-tube bars for the FORMULA screen */
+.tube {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(234, 243, 236, 0.03);
+}
+
+.tube > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green-mid), var(--accent-2));
+}
+
+.tube > i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(11, 20, 16, 0.35) 0 1px,
+    rgba(11, 20, 16, 0) 1px 7px
+  );
+}
+
+/* =========================================================================
+   curtain transition
+   ========================================================================= */
+
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--surface);
+  pointer-events: none;
+  transform: translate3d(0, 100%, 0);
+}
+
+.curtain-label {
+  position: absolute;
+  left: var(--margin);
+  bottom: var(--margin);
+}
+
+/* =========================================================================
+   canvas host
+   ========================================================================= */
+
+/* The canvas sits ABOVE the .behind layer and BELOW .above content: that is
+   the whole "sandwich" — part of the giant nickname is occluded by the
+   sculpture, part of it is painted over the sculpture. */
+.canvas-host {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}
+
+/* behind the sculpture */
+.behind {
+  position: relative;
+  z-index: 1;
+}
+
+.canvas-host canvas {
+  display: block;
+  touch-action: none;
+}
+
+.above {
+  position: relative;
+  z-index: 10;
+}
+
+/* Content that must let pointer events reach the canvas below. */
+.pass {
+  pointer-events: none;
+}
+
+.pass > * {
+  pointer-events: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* thin custom scrollbar for the wardrobe panel */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+}
