@@ -37,6 +37,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function PersonPage({ params }: Params) {
   const { slug } = await params;
   const person = getPerson(slug);
-  if (!person) notFound();
+  if (!person) {
+    notFound();
+    return null;
+  }
   return <PersonView person={person} />;
 }

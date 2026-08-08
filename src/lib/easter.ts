@@ -259,6 +259,9 @@ export function tone(opts: ToneOptions = {}) {
 }
 
 export const sfx = {
+  /** Mirror of setSoundEnabled, so UI toggles can stay on one object. */
+  setEnabled: (on: boolean) => setSoundEnabled(on),
+  enabled: () => soundEnabled(),
   tick: () => tone({ freq: 1180, dur: 0.05, gain: 0.025, type: "triangle" }),
   hover: () => tone({ freq: 720, dur: 0.06, gain: 0.02, type: "sine" }),
   curtain: () => tone({ freq: 260, sweep: 130, dur: 0.5, gain: 0.035 }),
