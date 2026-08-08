@@ -8,6 +8,7 @@ import { useEffect, useMemo } from "react";
 import { Footer, Rail, Reveal } from "@/components/chrome";
 import { PEOPLE, quoteOfTheDay } from "@/data/people";
 import { useScene } from "@/store/scene";
+import { dayIndex } from "@/lib/easter";
 
 const LINES = [
   "дачтоза",
@@ -20,10 +21,7 @@ const LINES = [
 export default function NotFound() {
   const setStage = useScene((s) => s.setStage);
   const today = useMemo(() => quoteOfTheDay(), []);
-  const line = useMemo(
-    () => LINES[Math.floor(Math.random() * LINES.length)],
-    [],
-  );
+  const line = useMemo(() => LINES[dayIndex() % LINES.length], []);
 
   useEffect(() => {
     setStage("off");

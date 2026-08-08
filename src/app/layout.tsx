@@ -25,7 +25,7 @@ import {
   Terminal,
 } from "@/components/flow";
 import { CHAT } from "@/data/chat";
-import { PersistentCanvas } from "@/three/PersistentCanvas";
+import { CanvasMount } from "@/three/CanvasMount";
 
 /* Display serif for the giant nicknames. Instrument Serif has no Cyrillic, so
    Playfair Display is loaded right behind it for СГЛЫПА / РАССОЛ / ТОЧКА. */
@@ -117,7 +117,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Bootstrap />
 
         {/* one canvas for the whole museum, mounted once, never remounted */}
-        <PersistentCanvas />
+        <CanvasMount />
 
         <GridLines columns={6} />
         <Fog />
